@@ -1,0 +1,58 @@
+Na serwerze docker z zainstalowanym Apache2 utwórz użytkownika wirtualnego user_virt z hasłem novell, który może zarządzać treścia wirtualnych hostów utworzonych w poprzednim ćwiczeniu z usług WWW
+
+IIN__19_20_1
+IP:192.168.100.95
+hasło: opensuse
+nazwa użytkownika:opensuse
+
+zypper ar https://download.opensuse.org/repositories/home:/Akoellh/openSUSE_Leap_15.1_Update/ PAM1
+zypper ref
+zypper in pam_pwdfile
+
+zypper in vsftpd
+systemctl start vsftpd.service
+systemctl status vsftpd.service
+systemctl enable vsftpd.service
+
+
+cp /etc/vsftpd.conf /etc/vsftpd.conf.bak
+
+cat /etc/vsftpd.conf | grep -v "^#"
+cat /etc/vsftpd.conf | grep -v "#"
+
+zypper in apache2-utils
+mkdir /etc/vsftpd
+htpasswd -cd /etc/vsftpd/ftpd.passwd user1
+
+user1
+Hasło: novell
+
+vi /etc/pam.d/vsftpd
+auth required pam_pwdfile.so pwdfile /etc/vsftpd/ftpd.passwd
+account required pam_permit.so
+
+useradd --home /home/vsftpd --gid nogroup -m --shell /bin/false vsftpd
+
+mkdir /etc/vsftpd_user_conf
+
+vi /etc/vsftpd_user_conf/user1
+
+local_root=/srv/ftp/user1
+
+systemctl restart vsftpd.service
+
+mkdir /srv/ftp/user1
+
+chown vsftpd:nogroup /srv/ftp/user1
+
+# sudo zypper ref
+# sudo zypper update
+# sudo zypper install firewalld
+
+# firewall-cmd --add-port=21/tcp --permanent
+# firewall-cmd --add-port=30000-30100/tcp --permanent
+# firewall-cmd --reload
+
+lsof -i | grep ftp 
+ps aux | egrep '[xi]netd' 
+netstat -tulpn | grep LISTEN | egrep '[xi]netd'
