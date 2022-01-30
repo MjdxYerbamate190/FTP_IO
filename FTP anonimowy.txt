@@ -1,0 +1,26 @@
+192.168.100.96
+root
+novell
+
+zypper in vsftpd
+systemctl start vsftpd.service
+systemctl status vsftpd.service
+systemctl enable vsftpd.service
+
+
+cp /etc/vsftpd.conf /etc/vsftpd.conf.bak
+cat /etc/vsftpd.conf | grep -v "^#"
+cat /etc/vsftpd.conf | grep -v "#"
+
+
+/etc/vsftpd.conf
+dodawanie folderu o nazwie ftp:
+/srv/ftp/wspolny 
+do
+/etc/vsftpd.conf
+anon_root=/srv/ftp/wspolny
+
+firewall-cmd --add-port=21/tcp --permanent
+firewall-cmd --add-port=30000-30100/tcp --permanent
+firewall-cmd --reload
+
