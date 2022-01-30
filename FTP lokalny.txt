@@ -1,0 +1,34 @@
+Na serwerze R1 utwórz 2 użytkowników user1 i user2 z hasłem novell. Ich katalogi domowe mają być dostępne poprzez usługę FTP. Użytkownicy nie mogą widzieć w usłudze FTP katalogów innych niż swoje ( opcja chroot_local_user).
+
+sprawdzić /etc/skel
+domyślny katalog użytkownika: /etc/default
+znajdź katalog: grep user1 /etc/passwd
+usermod user1 -d /home/Cokolwiek
+
+-user1
+useradd user1 -p novell
+sudo mkdir user1
+
+
+a local_enable=YES
+#userlist_enable=YES
+#userlist_file=/etc/vsftpd.userlist
+
+systemctl restart vsftpd
+
+-user2
+useradd -m -p novell user2
+
+in case of the follwoing error:
+500 OOPS: vsftpd: refusing to run with writable root inside chroot() 
+
+dodać do konfiguracji:
+
+allow_writeable_chroot=YES
+
+Dane:
+user1
+hasło: novell
+user2
+hasło: novell
+IP:192.168.100.95
